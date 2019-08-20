@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+</head>
+<body>
+<div id="dlg1" class="easyui-dialog" title="平台属性" style="width:600px;height:400px;padding:10px"
+     data-options="
+                modal:true,
+                closed:true,
+                buttons: [{
+                    text:'Save',
+                    iconCls:'icon-ok',
+                    handler:function(){
+                        saveAttr();
+                    }
+                },{
+                    text:'Exit',
+                    iconCls:'icon-back',
+                    handler:function(){
+                        $('#dlg1').dialog('close');
+                    }
+                }]
+            ">
+    <table id="dg1" class="easyui-datagrid" style="width:100%;height:100%"
+           data-options="fitColumns:true,singleSelect:true,toolbar:'#tb1',footer:'#ft1',onClickCell:onClickCell,iconCls: 'icon-edit',fitColumns:true,
+				scrollbarSize:0">
+        <thead>
+        <tr>
+            <th data-options="field:'valueName',width:150,editor:{type:'textbox',options:{required:true}}">属性值</th>
+        </tr>
+        </thead>
+    </table>
+
+    <div id="tb1" style="padding:2px 5px;">
+        属性名称  : <input class="easyui-textbox" id="attrName" required="required" style="width:150px"/>
+        <input type="hidden" id="id"/>
+    </div>
+
+    <div id="ft1" style="padding:2px 5px;">
+        <a href="javascript:addAttrValue()" class="easyui-linkbutton" iconCls="icon-add" plain="true"></a>
+        <a href="javascript:delAttrValue()" class="easyui-linkbutton" iconCls="icon-remove" plain="true"></a>
+    </div>
+</div>
+<script>
+    
+    function saveAttr() {
+        if (endEditing()){
+            $('#dg1').datagrid('acceptChanges');
+        }
+        var baseAttrInfo = {};
+        var attrName = $("#attrName").val();
+        baseAttrInfo["attrName"] = attrName;
+        var rows = $("#dg1").datagrid('getRows');
+        $(rows).each(function (i,row) {
+            baseAttrInfo["attrValueList[" + i + "].valueName"] = row.valueName;
+        });
+        var catalog3Id =  $('#cc3').combobox('getValue');
+        baseAttrInfo["catalog3Id"] = catalog3Id;
+        var attrId = $("#id").val();
+        baseAttrInfo["id"] = attrId;
+        $.post("saveAttr", baseAttrInfo, function (data) {
+            alert(data);
+            $("#dlg1").dialog("close");
+            $("#dg").datagrid("reload", "getAttrList?catalog3Id=" + catalog3Id);
+        });
+    }
+    
+    function delAttrValue() {
+        //获取选中的行
+        var selected = $('#dg1').datagrid('getSelected');
+        //获取行的索引
+        var index = $('#dg1').datagrid('getRowIndex', selected);
+        //删除行
+        $('#dg1').datagrid('deleteRow', index);
+    }
+
+    function addAttrValue() {
+        if (endEditing()){
+            $('#dg1').datagrid('appendRow',{valueName:''});
+            editIndex = $('#dg1').datagrid('getRows').length-1;
+            $('#dg1').datagrid('selectRow', editIndex)
+                .datagrid('beginEdit', editIndex);
+        }
+    }
+
+    var editIndex = undefined;
+    function endEditing(){
+        if (editIndex == undefined){return true}
+        if ($('#dg1').datagrid('validateRow', editIndex)){
+            $('#dg1').datagrid('endEdit', editIndex);
+            editIndex = undefined;
+            return true;
+        } else {
+            return false;
+        }
+    }
+    function onClickCell(index, field){
+        if (editIndex != index){
+            if (endEditing()){
+                $('#dg1').datagrid('selectRow', index)
+                    .datagrid('beginEdit', index);
+                var ed = $('#dg1').datagrid('getEditor', {index:index,field:'valueName'});
+                if (ed){
+                    ($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).focus();
+                }
+                editIndex = index;
+            } else {
+                setTimeout(function(){
+                    $('#dg1').datagrid('selectRow', editIndex);
+                },0);
+            }
+        }
+    }
+</script>
+
+</body>
+</html>

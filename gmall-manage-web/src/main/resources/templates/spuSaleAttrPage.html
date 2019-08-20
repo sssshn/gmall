@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+</head>
+<body>
+    <div id="dlgForSpuSaleAttr" class="easyui-dialog" title="Toolbar and Buttons" style="width:600px;height:400px;padding:10px"
+         data-options="
+                    iconCls: 'icon-save',
+                    modal:true,
+                    closed:true,
+                    buttons: [{
+                        text:'Ok',
+                        iconCls:'icon-ok',
+                        handler:function(){
+                            saveSpuSaleAttr();
+                        }
+                    },{
+                        text:'Exit',
+                        iconCls:'icon-back',
+                        handler:function(){
+                            $('#dlgForSpuSaleAttr').dialog('close');
+                        }
+                    }]
+                ">
+        <div style="margin-bottom:20px">
+            <input id="spuSaleAttr" class="easyui-combobox" data-options="
+                    label: '销售属性:',
+                    labelPosition: 'right'
+                    "/>
+        </div>
+
+        <table id="spuSaleAttrValueDg" class="easyui-datagrid" title="销售品属性值列表" style="width:100%;height:200px"
+               data-options="fitColumns:true,singleSelect:true,toolbar:'#spuSaleAttrValueDgToolbar',onClickCell:onClickCell1,fitColumns:true,scrollbarSize:0">
+        </table>
+
+        <div id="spuSaleAttrValueDgToolbar" style="padding:2px 5px;">
+            <a href="javascript:addSpuSaleAttrValue()" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>
+            <a href="javascript:delAttrValue()" class="easyui-linkbutton" iconCls="icon-edit" plain="true">编辑</a>
+            <a href="javascript:delAttrValue()" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除</a>
+        </div>
+    </div>
+
+    <script>
+        //打开销售属性dialog
+        function addSpuSaleAttr() {
+            $("#dlgForSpuSaleAttr").dialog('open');
+            initSpuSaleAttrDlg();
+            initSpuSaleAttrValueListDatagrid();
+        }
+
+        //查询销售属性列表(字典表)
+        function initSpuSaleAttrDlg() {
+            $('#spuSaleAttr').combobox({
+                url:'baseSaleAttrList',
+                valueField:'id',
+                textField:'name'
+            });
+        }
+
+        //初始化销售属性值
+        function initSpuSaleAttrValueListDatagrid() {
+            $('#spuSaleAttrValueDg').datagrid('loadData',{total: 0, rows : []});
+            $('#spuSaleAttrValueDg').datagrid({
+                columns:[[
+                    {field:'id',title:'销售属性值ID',width:40},
+                    {field:'saleAttrValueName',title:'销售属性值名称',width:80,editor:{type:'textbox',options:{required:true}}}
+                ]]
+            });
+        }
+
+        //添加销售属性值
+        function addSpuSaleAttrValue() {
+            if (endEditing1()){
+                $('#spuSaleAttrValueDg').datagrid('appendRow',{id:'',saleAttrValueName:''});
+                editIndex1 = $('#spuSaleAttrValueDg').datagrid('getRows').length-1;
+                $('#spuSaleAttrValueDg').datagrid('selectRow', editIndex1)
+                    .datagrid('beginEdit', editIndex1);
+            }
+        }
+
+        var editIndex1 = undefined;
+        function endEditing1(){
+            if (editIndex1 == undefined){return true}
+            if ($('#spuSaleAttrValueDg').datagrid('validateRow', editIndex1)){
+                $('#spuSaleAttrValueDg').datagrid('endEdit', editIndex1);
+                editIndex1 = undefined;
+                return true;
+            } else {
+                return false;
+            }
+        }
+        function onClickCell1(index, field){
+            if (editIndex1 != index){
+                if (endEditing1()){
+                    $('#spuSaleAttrValueDg').datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                    var ed = $('#spuSaleAttrValueDg').datagrid('getEditor', {index:index,field:'saleAttrValueName'});
+                    if (ed){
+                        ($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).focus();
+                    }
+                    editIndex1 = index;
+                } else {
+                    setTimeout(function(){
+                        $('#spuSaleAttrValueDg').datagrid('selectRow', editIndex1);
+                    },0);
+                }
+            }
+        }
+
+        //保存销售属性值
+        function saveSpuSaleAttr() {
+            if (endEditing1()){
+                $('#dg1').datagrid('acceptChanges');
+            }
+            var saleAttrId = $('#spuSaleAttr').combobox('getValue');
+            var saleAttrName = $("#spuSaleAttr").combobox('getText');
+           var saleAttrValues = $('#spuSaleAttrValueDg').datagrid('getData');
+            $('#dgForSpu2').datagrid('appendRow',{
+                saleAttrId:saleAttrId,
+                saleAttrName:saleAttrName,
+                spuSaleAttrValueJson:saleAttrValues
+            });
+            $('#dlgForSpuSaleAttr').dialog('close');
+
+        }
+    </script>
+</body>
+</html>

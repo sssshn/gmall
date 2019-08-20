@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+</head>
+<body>
+<table id="dg" class="easyui-datagrid" title="属性列表" style="width:100%;height:100%"
+       data-options="fitColumns:true,singleSelect:true,toolbar:'#tb',footer:'#ft'">
+    <thead>
+    <tr>
+        <th data-options="field:'id',width:100,align:'center'">属性ID</th>
+        <th data-options="field:'attrName',width:120,align:'center'">属性名</th>
+    </tr>
+    </thead>
+</table>
+<div id="tb">
+
+    &nbsp;一级分类 :&nbsp;
+    <input id="cc1" class="easyui-combobox" data-options="
+        valueField: 'id',
+        textField: 'name',
+        url: 'get_data1',
+        onSelect: function(rec){
+            var url = 'get_data2?catalog1Id='+rec.id;
+            $('#cc2').combobox('reload', url);
+        }"/>
+    &nbsp;二级分类 :&nbsp;
+    <input id="cc2" class="easyui-combobox" data-options="
+        valueField: 'id',
+        textField: 'name',
+        onSelect: function(rec){
+            var url = 'get_data3?catalog2Id='+rec.id;
+            $('#cc3').combobox('reload', url);
+        }"/>
+    &nbsp;三级分类 :&nbsp;
+    <input id="cc3" class="easyui-combobox" data-options="valueField:'id',textField:'name'"/>
+    &nbsp;<a href="javascript:reloadAttrList()" class="easyui-linkbutton" iconCls="icon-search">Search</a>
+</div>
+<div id="ft" style="padding:2px 5px;">
+    <a href="javascript:addAttr()" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">Add</a>
+    <a href="javascript:updateAttr()" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">Edit</a>
+    <a href="javascript:deleteAttr()" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">Remove</a>
+</div>
+
+<!--引入dialog-->
+<div th:include="attrInfoPage"></div>
+
+<script>
+
+    //删除属性和属性值
+    function deleteAttr() {
+        var catalog3Id =  $('#cc3').combobox('getValue');
+        if (catalog3Id != "") {
+            //获取选中的行
+            var selected = $('#dg').datagrid('getSelected');
+            $('#dg').datagrid({
+                url:"deleteAttr?id=" + selected.id
+            });
+
+            $('#dg').datagrid({
+                url:"getAttrList?catalog3Id=" + catalog3Id
+            });
+
+            //reload可能有bug
+            //$("#dg").datagrid("reload", "getAttrList?catalog3Id=" + catalog3Id);
+        } else {
+            alert("请选择三级ID")
+        }
+    }
+
+    //修改属性和属性值
+    function updateAttr() {
+        var catalog3Id =  $('#cc3').combobox('getValue');
+        if (catalog3Id != "") {
+            $('#dlg1').dialog('open');
+            //获取选中的行
+            var selected = $('#dg').datagrid('getSelected');
+            $("#attrName").textbox('setValue',selected.attrName);
+            $("#id").val(selected.id);
+            $('#dg1').datagrid({
+                url:"updateAttr?id=" + selected.id
+            });
+        } else {
+            alert("请选择三级ID")
+        }
+    }
+
+    //根据三级菜单查询平台属性
+    function reloadAttrList() {
+        var catalog3Id =  $('#cc3').combobox('getValue');
+        $('#dg').datagrid({
+           url:"getAttrList?catalog3Id=" + catalog3Id
+        });
+    }
+
+    //平台属性添加
+    function addAttr() {
+        var catalog3Id =  $('#cc3').combobox('getValue');
+        if (catalog3Id != "") {
+            $('#dlg1').dialog('open');
+        } else {
+            alert("请选择三级ID")
+        }
+    }
+</script>
+</body>
+</html>
