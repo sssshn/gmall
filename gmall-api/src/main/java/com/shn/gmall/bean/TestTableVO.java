@@ -9,11 +9,14 @@ import java.io.Serializable;
 import java.util.Date;
 
 
+/**
+ * @author sss
+ */
 @Table(name = "test_table")
 public class TestTableVO implements Serializable {
 
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = -7715131972905525358L;
     @Id
     @GeneratedValue(generator = "JDBC")
     private Long id;
