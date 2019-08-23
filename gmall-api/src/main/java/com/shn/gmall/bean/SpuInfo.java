@@ -25,6 +25,8 @@ public class SpuInfo implements Serializable {
 
   @Transient
   private List<SpuSaleAttr> spuSaleAttrList;
+  @Transient
+  private List<SpuImage> spuImageList;
 
   public List<SpuSaleAttr> getSpuSaleAttrList() {
     return spuSaleAttrList;
@@ -32,6 +34,14 @@ public class SpuInfo implements Serializable {
 
   public void setSpuSaleAttrList(List<SpuSaleAttr> spuSaleAttrList) {
     this.spuSaleAttrList = spuSaleAttrList;
+  }
+
+  public List<SpuImage> getSpuImageList() {
+    return spuImageList;
+  }
+
+  public void setSpuImageList(List<SpuImage> spuImageList) {
+    this.spuImageList = spuImageList;
   }
 
   public String getId() {

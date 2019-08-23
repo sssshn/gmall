@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div id="skuListDialog" class="easyui-dialog" title="Sku列表" style="width:700px;height:250px;padding:10px"
+         data-options="
+                    modal:true,
+                    closed:true,
+                    buttons: [{
+                        text:'Save',
+                        iconCls:'icon-ok',
+                        handler:function(){
+                            alert('保存');
+                        }
+                    },{
+                        text:'Exit',
+                        iconCls:'icon-back',
+                        handler:function(){
+                            $('#skuListDialog').dialog('close');
+                        }
+                    }]
+                ">
+        <table id="skuListDg" class="easyui-datagrid" style="width:100%;height:100%"
+               data-options="fitColumns:true,singleSelect:true,collapsible:true,toolbar:'#skuListToolbar',fitColumns:true,scrollbarSize:0">
+        </table>
+
+        <div id="skuListToolbar" style="padding:2px 5px;">
+            <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除</a>
+        </div>
+    </div>
+<script>
+    function getSkuList() {
+        var spuRow = $("#dgForSpu").datagrid('getSelected');
+        if (spuRow != null && spuRow != undefined) {
+            initSkuListDatagrid();
+            $("#skuListDg").datagrid({
+                url: "getSkuList?spuId=" + spuRow.id
+            });
+        } else {
+            alert("请选择Spu单元");
+        }
+    }
+
+    function initSkuListDatagrid() {
+        $('#skuListDialog').dialog('open');
+        $('#skuListDg').datagrid({
+            url:"",
+            columns:[[
+                {field:'id',title:'库存单元Id',width:80},
+                {field:'skuName',title:'库存单元名称',width:80},
+                {field:'price',title:'价格',width:80,formatter:function(val,rowData,rowIndex){
+                        if(val!=null)
+                            return val.toFixed(2);
+                    }}
+            ]]
+        });
+    }
+</script>
+
+</body>
+</html>

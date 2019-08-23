@@ -18,6 +18,11 @@ public class AttrControl {
     @Reference
     private AttrService attrService;
 
+    @RequestMapping("/getPlatformAttr")
+    public List<BaseAttrInfo> getPlatformAttr(String catalog3Id) {
+        return attrService.getPlatformAttr(catalog3Id);
+    }
+
     /**
      * 根据三级id查属性
      * @param catalog3Id

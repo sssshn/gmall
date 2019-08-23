@@ -42,17 +42,23 @@
 </div>
 <div id="ftForSpu" style="padding:2px 5px;">
     <a href="javascript:addSpu()" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">Add</a>
-    <a href="javascript:updateAttr()" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">Edit</a>
-    <a href="javascript:deleteAttr()" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">Remove</a>
+    <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">Edit</a>
+    <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">Remove</a>
+    <a href="javascript:addSku()" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">Sku Add</a>
+    <a href="javascript:getSkuList()" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true">Sku Search</a>
 </div>
 
 <div th:include="spuInfoPage"></div>
+<div th:include="skuListPage"></div>
+<div th:include="skuInfoPage"></div>
 
 <script>
     function addSpu() {
         $("#dlgForSpu1").dialog('open');
+        initUploader();
         initSpuImgListDatagrid();
         initSpuSaleAttrListDatagrid();
+        //初始化上传插件webUploader
     }
     
 function reloadSpuList() {

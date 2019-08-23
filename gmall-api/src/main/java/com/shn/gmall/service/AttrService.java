@@ -10,6 +10,8 @@ import java.util.List;
  */
 public interface AttrService {
 
+    List<BaseAttrInfo> getPlatformAttr(String catalog3Id);
+
     /**
      * 根据三级ID查询属性
      * @param catalog3Id

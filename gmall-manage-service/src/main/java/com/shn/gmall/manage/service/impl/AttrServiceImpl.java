@@ -68,6 +68,20 @@ public class AttrServiceImpl implements AttrService {
     }
 
     @Override
+    public List<BaseAttrInfo> getPlatformAttr(String catalog3Id) {
+        BaseAttrInfo baseAttrInfo = new BaseAttrInfo();
+        baseAttrInfo.setCatalog3Id(catalog3Id);
+        List<BaseAttrInfo> baseAttrInfoList = attrMapper.select(baseAttrInfo);
+        for (BaseAttrInfo attrInfo : baseAttrInfoList) {
+            BaseAttrValue baseAttrValue = new BaseAttrValue();
+            baseAttrValue.setAttrId(attrInfo.getId());
+            List<BaseAttrValue> baseAttrValueList = attrValueMapper.select(baseAttrValue);
+            attrInfo.setAttrValueList(baseAttrValueList);
+        }
+        return baseAttrInfoList;
+    }
+
+    @Override
     public List<BaseAttrInfo> getAttrList(String catalog3Id) {
         BaseAttrInfo baseAttrInfo = new BaseAttrInfo();
         baseAttrInfo.setCatalog3Id(catalog3Id);
