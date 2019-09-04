@@ -6,6 +6,10 @@ import java.util.List;
 
 public interface SkuService {
 
+    List<SkuInfo> getSkuInfoByCatalog3Id(String catalog3Id);
+
+    SkuInfo spuImageListById(String skuId);
+
     List<SkuInfo> getSkuList(String spuId);
 
     void saveSku(SkuInfo skuInfo);

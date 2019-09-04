@@ -2,6 +2,7 @@ package com.shn.gmall.manage.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.shn.gmall.bean.BaseSaleAttr;
+import com.shn.gmall.bean.SkuInfo;
 import com.shn.gmall.bean.SpuImage;
 import com.shn.gmall.bean.SpuInfo;
 import com.shn.gmall.bean.SpuSaleAttr;
@@ -15,6 +16,7 @@ import com.shn.gmall.service.SpuService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author sss
@@ -33,6 +35,17 @@ public class SpuServiceImpl implements SpuService {
     private SpuSaleAttrValueMapper spuSaleAttrValueMapper;
     @Autowired
     private SpuImageMapper spuImageMapper;
+
+    @Override
+    public List<SkuInfo> getSkuSaleAttrValueListBySpu(String spuId) {
+        return spuSaleAttrValueMapper.selectSkuSaleAttrValueListBySpu(spuId);
+    }
+
+    @Override
+    public List<SpuSaleAttr> spuSaleAttrListCheckBySku(Map<String, String> map) {
+        List<SpuSaleAttr> spuSaleAttrList = spuSaleAttrValueMapper.selectSpuSaleAttrListCheckBySku(map);
+        return spuSaleAttrList;
+    }
 
     @Override
     public List<SpuInfo> getSpuList(String catalog3Id) {

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shn.gmall.manage.mapper.SpuSaleAttrValueMapper">
+    
+    <select id="selectSpuSaleAttrListCheckBySku" parameterType="map" resultMap="selectSpuSaleAttrListCheckBySkuMap">
+        SELECT
+	t2.*,
+IF
+	( t3.ssavId IS NOT NULL, 1, 0 ) AS is_checked
+FROM
+	(
+	SELECT
+		t.id,
+		t.sale_attr_id,
+		t.sale_attr_name,
+		t1.id AS sale_attr_value_id,
+		t1.sale_attr_value_name
+	FROM
+		spu_sale_attr t
+		INNER JOIN spu_sale_attr_value t1 ON t.spu_id = t1.spu_id
+		AND t.sale_attr_id = t1.sale_attr_id
+	WHERE
+		t.spu_id = #{spuId}
+	) t2
+	LEFT JOIN ( SELECT id AS ssavId, sale_attr_id, sale_attr_value_id FROM sku_sale_attr_value WHERE sku_id = #{skuId} ) t3 ON t2.sale_attr_id = t3.sale_attr_id
+	AND t2.sale_attr_value_id = t3.sale_attr_value_id
+ORDER BY
+	t2.sale_attr_value_id
+    </select>
+    
+    <resultMap id="selectSpuSaleAttrListCheckBySkuMap" type="com.shn.gmall.bean.SpuSaleAttr">
+        <result column="sale_attr_id" property="saleAttrId"/>
+        <result column="sale_attr_name" property="saleAttrName"/>
+        <collection property="spuSaleAttrValueList" ofType="com.shn.gmall.bean.SpuSaleAttrValue">
+            <result column="sale_attr_value_id" property="id"/>
+            <result column="sale_attr_value_name" property="saleAttrValueName"/>
+            <result column="is_checked" property="isChecked"/>
+        </collection>
+    </resultMap>
+    
+    <select id="selectSkuSaleAttrValueListBySpu" parameterType="string" resultMap="selectSkuSaleAttrValueListBySpuMap">
+        SELECT
+            t.id,
+            t1.sale_attr_value_id,
+            t1.id
+        FROM
+            sku_info t,
+            sku_sale_attr_value t1
+        WHERE
+            t.id = t1.sku_id
+            AND t.spu_id = 57
+    </select>
+
+    <resultMap id="selectSkuSaleAttrValueListBySpuMap" type="com.shn.gmall.bean.SkuInfo">
+        <result column="id" property="id"/>
+        <collection property="skuSaleAttrValueList" ofType="com.shn.gmall.bean.SkuSaleAttrValue">
+            <result column="sale_attr_value_id" property="saleAttrValueId"/>
+        </collection>
+    </resultMap>
+</mapper>

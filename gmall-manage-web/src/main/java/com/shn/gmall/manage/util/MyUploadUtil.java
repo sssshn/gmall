@@ -14,7 +14,7 @@ import java.io.IOException;
  */
 public class MyUploadUtil {
 
-    private static final String FILE_URL = "http://192.168.155.237/";
+    private static final String FILE_URL = "http://192.168.8.123/";
 
     public static String uploadImg(MultipartFile file) {
         String[] uploadFile = null;

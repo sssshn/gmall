@@ -2,6 +2,7 @@ package com.shn.gmall.bean;
 
 
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.io.Serializable;
 
 /**
@@ -15,6 +16,17 @@ public class SpuSaleAttrValue implements Serializable {
   private String spuId;
   private String saleAttrId;
   private String saleAttrValueName;
+
+  @Transient
+  private String isChecked;
+
+  public String getIsChecked() {
+    return isChecked;
+  }
+
+  public void setIsChecked(String isChecked) {
+    this.isChecked = isChecked;
+  }
 
 
   public String getId() {
