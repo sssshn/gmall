@@ -4,11 +4,19 @@ import com.shn.gmall.bean.BaseAttrInfo;
 import com.shn.gmall.bean.BaseAttrValue;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author sss
  */
 public interface AttrService {
+
+    /**
+     *
+     * @param valueIdSet
+     * @return
+     */
+    List<BaseAttrInfo> getAttrInfoByValueId(Set<Integer> valueIdSet);
 
     List<BaseAttrInfo> getPlatformAttr(String catalog3Id);
 

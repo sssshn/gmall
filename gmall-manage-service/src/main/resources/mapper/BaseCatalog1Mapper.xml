@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shn.gmall.manage.mapper.BaseCatalog1Mapper">
+
+    <select id="selectAllCatalogId" resultMap="selectAllCatalogIdMap">
+        SELECT
+            t1.id,
+            t2.id c2Id,
+            t2.NAME c2Name,
+            t2.catalog1_id catalog1Id,
+            t3.id c3Id,
+            t3.NAME c3Name,
+            t3.catalog2_id catalog2Id
+        FROM
+            base_catalog1 t1,
+            base_catalog2 t2,
+            base_catalog3 t3
+        WHERE
+            t1.id = t2.catalog1_id
+            AND t2.id = t3.catalog2_id
+    </select>
+
+    <resultMap id="selectAllCatalogIdMap" type="com.shn.gmall.bean.BaseCatalog1">
+        <result column="id" property="id"/>
+        <collection property="baseCatalog2List" ofType="com.shn.gmall.bean.BaseCatalog2">
+            <result column="c2Id" property="id"/>
+            <result column="c2Name" property="name"/>
+            <result column="catalog1Id" property="catalog1Id"/>
+            <collection property="catalog3List" ofType="com.shn.gmall.bean.BaseCatalog3">
+                <result column="c3Id" property="id"/>
+                <result column="c3Name" property="name"/>
+                <result column="catalog2Id" property="catalog2Id"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+</mapper>

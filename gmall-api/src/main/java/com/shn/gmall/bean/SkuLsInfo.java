@@ -1,34 +1,33 @@
 package com.shn.gmall.bean;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.List;
 
 public class SkuLsInfo implements Serializable {
     private static final long serialVersionUID = -8081963530377793386L;
 
-    private String id;
-    private BigDecimal price;
+    private Integer id;
+    private Double price;
     private String skuName;
     private String skuDesc;
     private String catalog3Id;
     private String skuDefaultImg;
     private Long hotScore = 0L;
-    private List<SkuLsAttrValue> skuLsAttrValueList;
+    private List<SkuLsAttrValue> skuAttrValueList;
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public BigDecimal getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
@@ -72,11 +71,11 @@ public class SkuLsInfo implements Serializable {
         this.hotScore = hotScore;
     }
 
-    public List<SkuLsAttrValue> getSkuLsAttrValueList() {
-        return skuLsAttrValueList;
+    public List<SkuLsAttrValue> getSkuAttrValueList() {
+        return skuAttrValueList;
     }
 
-    public void setSkuLsAttrValueList(List<SkuLsAttrValue> skuLsAttrValueList) {
-        this.skuLsAttrValueList = skuLsAttrValueList;
+    public void setSkuAttrValueList(List<SkuLsAttrValue> skuAttrValueList) {
+        this.skuAttrValueList = skuAttrValueList;
     }
 }

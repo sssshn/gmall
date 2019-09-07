@@ -5,6 +5,7 @@ import com.shn.gmall.bean.SkuInfo;
 import com.shn.gmall.bean.SkuLsInfo;
 import com.shn.gmall.service.SkuService;
 import io.searchbox.client.JestClient;
+import io.searchbox.core.Index;
 import org.apache.commons.beanutils.BeanUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +29,16 @@ public class GmallListServiceApplicationTests {
 
     @Test
     public void contextLoads() {
+
+    }
+
+    public void importEs() {
         //根据三级分类id获取sku
         List<SkuInfo> skuInfoList = skuService.getSkuInfoByCatalog3Id("4260");
         //需要导入es的数据
         List<SkuLsInfo> skuLsInfoList = new ArrayList<>();
-        SkuLsInfo skuLsInfo = new SkuLsInfo();
         for (SkuInfo skuInfo : skuInfoList) {
+            SkuLsInfo skuLsInfo = new SkuLsInfo();
             try {
                 BeanUtils.copyProperties(skuLsInfo, skuInfo);
             } catch (IllegalAccessException e) {
@@ -43,7 +49,18 @@ public class GmallListServiceApplicationTests {
             skuLsInfoList.add(skuLsInfo);
         }
 
-        System.out.println("导入es中");
+        //导入到es中
+        for (SkuLsInfo skuLsInfo : skuLsInfoList) {
+            String id = String.valueOf(skuLsInfo.getId());
+            Index build = new Index.Builder(skuLsInfo).index("gmall").type("SkuLsInfo").id(id).build();
+            System.out.println(build.toString());
+
+            try {
+                jestClient.execute(build);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

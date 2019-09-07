@@ -7,13 +7,13 @@ import java.io.Serializable;
  */
 public class SkuLsAttrValue implements Serializable {
     private static final long serialVersionUID = 5941332810273469721L;
-    private String valueId;
+    private Integer valueId;
 
-    public String getValueId() {
+    public Integer getValueId() {
         return valueId;
     }
 
-    public void setValueId(String valueId) {
+    public void setValueId(Integer valueId) {
         this.valueId = valueId;
     }
 }
