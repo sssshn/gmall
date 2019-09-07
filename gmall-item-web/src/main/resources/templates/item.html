@@ -286,7 +286,7 @@
                             </div>
                         </form>
                     </div>
-                    <div id="cartBtn" style="cursor:pointer;" canClick="1"
+                    <div id="cartBtn" style="cursor:pointer;" canClick="1" onclick="addToCart(this)"
                          class="box-btns-two">
 
                         放入购物车
@@ -1036,6 +1036,15 @@
 <script src="/js/jquery1.9.js" type="text/javascript" charset="utf-8"></script>
 <script src="/js/js.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
+
+    function addToCart(obj) {
+        var canClick = $(obj).attr("canClick");
+        if (canClick == '0') {
+            return ;
+        }
+
+        $("#itemForm").submit();
+    }
 
     function switchSkuId() {
         var skuJson = $("#skuJson").val();

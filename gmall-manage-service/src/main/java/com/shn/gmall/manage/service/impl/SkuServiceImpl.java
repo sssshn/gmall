@@ -33,6 +33,13 @@ public class SkuServiceImpl implements SkuService {
     private RedisUtil redisUtil;
 
     @Override
+    public SkuInfo getSkuInfoById(String skuId) {
+        SkuInfo skuInfo = new SkuInfo();
+        skuInfo.setId(Integer.parseInt(skuId));
+        return skuInfoMapper.selectByPrimaryKey(skuInfo);
+    }
+
+    @Override
     public List<SkuInfo> getSkuInfoByCatalog3Id(String catalog3Id) {
         SkuInfo skuInfo = new SkuInfo();
         skuInfo.setCatalog3Id(catalog3Id);
