@@ -2,6 +2,7 @@ package com.shn.gmall.cart.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
+import com.shn.gmall.annotation.LoginRequire;
 import com.shn.gmall.bean.CartInfo;
 import com.shn.gmall.bean.SkuInfo;
 import com.shn.gmall.service.CartService;
@@ -30,10 +31,11 @@ public class CartController {
      * 异步购物车选中
      * @return
      */
+    @LoginRequire(isNeedSuccess = false)
     @RequestMapping("/checkCart")
     public String checkCart(HttpServletRequest request, HttpServletResponse response, CartInfo cartInfo, ModelMap map) {
         List<CartInfo> cartInfoList = null;
-        String userId = "1";
+        String userId = (String) request.getAttribute("userId");
         if (StringUtils.isBlank(userId)) {
             //用户未登录修改cookie
             String cartListCookie = CookieUtil.getCookieValue(request, "cartListCookie", true);
@@ -53,7 +55,17 @@ public class CartController {
             cartService.changeCartSelect(cartInfo);
             cartInfoList = cartService.getCartInfoListFromCache(userId);
         }
+        //总金额
+        BigDecimal bigDecimal = new BigDecimal("0");
+        if (cartInfoList != null && cartInfoList.size() > 0) {
+            for (CartInfo cartInfo1 : cartInfoList) {
+                if ("1".equals(cartInfo1.getIsChecked())) {
+                    bigDecimal = bigDecimal.add(cartInfo1.getCartPrice());
+                }
+            }
+        }
 
+        map.addAttribute("totalPrice", bigDecimal);
         map.addAttribute("cartList", cartInfoList);
         return "cartListInner";
     }
@@ -63,8 +75,9 @@ public class CartController {
      * @return
      */
     @RequestMapping("/cartList")
+    @LoginRequire(isNeedSuccess = false)
     public String cartList(HttpServletRequest request, ModelMap modelMap) {
-        String userId = "1";
+        String userId = (String) request.getAttribute("userId");
         List<CartInfo> cartInfoList = null;
         if (StringUtils.isBlank(userId)) {
             //用户未登录，从cookie去取
@@ -81,7 +94,9 @@ public class CartController {
         BigDecimal bigDecimal = new BigDecimal("0");
         if (cartInfoList != null && cartInfoList.size() > 0) {
             for (CartInfo cartInfo : cartInfoList) {
-                bigDecimal = bigDecimal.add(cartInfo.getCartPrice());
+                if ("1".equals(cartInfo.getIsChecked())) {
+                    bigDecimal = bigDecimal.add(cartInfo.getCartPrice());
+                }
             }
         }
 
@@ -98,6 +113,7 @@ public class CartController {
      * @param cartInfo
      * @return
      */
+    @LoginRequire(isNeedSuccess = false)
     @RequestMapping("/addToCart")
     public String addToCart(HttpServletRequest request, HttpServletResponse response, CartInfo cartInfo) {
 
@@ -110,7 +126,7 @@ public class CartController {
         cartInfo.setSkuPrice(new BigDecimal(skuInfo.getPrice()));
         cartInfo.setCartPrice(new BigDecimal(skuInfo.getPrice()).multiply(new BigDecimal(cartInfo.getSkuNum())));
 
-        String userId = "1";
+        String userId = (String) request.getAttribute("userId");
         //用户未登录
         if (StringUtils.isBlank(userId)) {
             String cartListCookie = CookieUtil.getCookieValue(request, "cartListCookie", true);
@@ -162,6 +178,7 @@ public class CartController {
      * 跳转购物车添加成功页面
      * @return
      */
+    @LoginRequire(isNeedSuccess = false)
     @RequestMapping("/cartSuccess")
     public String cartSuccess() {
         return "success";

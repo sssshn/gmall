@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface CartService {
 
+    void syncCartListCookieToDb(List<CartInfo> cartInfoList, String userId);
+
     void changeCartSelect(CartInfo cartInfo);
 
     List<CartInfo> getCartInfoListFromCache(String userId);

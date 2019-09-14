@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
 import tk.mybatis.mapper.entity.Example;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +23,25 @@ public class CartServiceImpl implements CartService {
     private CartInfoMapper cartInfoMapper;
     @Autowired
     private RedisUtil redisUtil;
+
+    @Override
+    public void syncCartListCookieToDb(List<CartInfo> cartInfoList, String userId) {
+        for (CartInfo cartInfo : cartInfoList) {
+            CartInfo info = new CartInfo();
+            info.setUserId(userId);
+            info.setSkuId(cartInfo.getSkuId());
+            CartInfo selectOne = cartInfoMapper.selectOne(info);
+            if (selectOne == null) {
+                cartInfo.setUserId(userId);
+                cartInfoMapper.insertSelective(cartInfo);
+            } else {
+                selectOne.setSkuNum(selectOne.getSkuNum() + cartInfo.getSkuNum());
+                selectOne.setCartPrice(selectOne.getSkuPrice().multiply(new BigDecimal(selectOne.getSkuNum())));
+            }
+        }
+
+        syncCache(userId);
+    }
 
     @Override
     public void changeCartSelect(CartInfo cartInfo) {
